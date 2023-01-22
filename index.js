@@ -88,8 +88,15 @@ const run = async () => {
 
         /* ADMIN ROLE: delete product from here */
         app.delete('/product/:id', async (req, res) => {
-            const query = { _id: ObjectId(req.params.id) }
+            const query = { _id: ObjectId(req.params.id) };
             const result = await productsCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        /* ADMIN ROLE: Delete user from here */
+        app.delete('/all-users/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) };
+            const result = await usersCollection.deleteOne(query);
             res.send(result)
         })
 
