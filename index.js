@@ -40,6 +40,13 @@ const run = async () => {
             res.send(addToCartProducts);
         })
 
+        app.get('/user-role', async (req, res) => {
+            const email = req.query.email;
+            const query = { userEmail: email };
+            const result = await usersCollection.findOne(query);
+            res.send(result)
+        })
+
         /* Save purchase product */
         app.post('/add-to-cart', async (req, res) => {
             const product = req.body;
@@ -55,6 +62,14 @@ const run = async () => {
 
         })
 
+        /*ADMIN ROLE:  Add product from here */
+        app.post('/add-product', async (req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            res.send(result)
+        })
+
+
         /* Delete single cart product here */
         app.delete('/add-to-cart/:id', async (req, res) => {
             const id = req.params.id
@@ -62,6 +77,8 @@ const run = async () => {
             const result = await addToCartCollection.deleteOne(query)
             res.send(result)
         })
+
+
 
 
 
