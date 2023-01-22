@@ -40,11 +40,19 @@ const run = async () => {
             res.send(addToCartProducts);
         })
 
+        /* Find particuler user with theyer email */
         app.get('/user-role', async (req, res) => {
             const email = req.query.email;
             const query = { userEmail: email };
             const result = await usersCollection.findOne(query);
             res.send(result)
+        })
+
+        /* ADMIN ROLE: get all user from here */
+        app.get('/all-users', async (req, res) => {
+            const query = {}
+            const allUsers = await usersCollection.find(query).toArray()
+            res.send(allUsers)
         })
 
         /* Save purchase product */
@@ -58,7 +66,7 @@ const run = async () => {
         app.post('/save-user', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
-            res.send(result)
+            res.send(result);
 
         })
 
@@ -66,15 +74,22 @@ const run = async () => {
         app.post('/add-product', async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
-            res.send(result)
+            res.send(result);
         })
 
 
         /* Delete single cart product here */
         app.delete('/add-to-cart/:id', async (req, res) => {
-            const id = req.params.id
-            const query = { _id: ObjectId(id) }
-            const result = await addToCartCollection.deleteOne(query)
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await addToCartCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        /* ADMIN ROLE: delete product from here */
+        app.delete('/product/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) }
+            const result = await productsCollection.deleteOne(query);
             res.send(result)
         })
 
