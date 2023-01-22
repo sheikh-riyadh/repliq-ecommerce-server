@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000
@@ -18,17 +18,42 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 const run = async () => {
     try {
+        /* All Collections here */
         const productsCollection = client.db('repliq-ecommerce').collection('products')
+        const addToCartCollection = client.db('repliq-ecommerce').collection('add-to-cart')
+
+
+        /* Get all products from here */
         app.get('/', async (req, res) => {
             const query = {}
             const products = await productsCollection.find(query).toArray()
-            res.send(products)
-        })
+            res.send(products);
+        });
+
+        /* Get modal data from here */
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const product = await productsCollection.findOne(query);
+            res.send(product);
+        });
+
+
+        /* Save purchase product */
+        app.post('/add-to-cart', async (req, res) => {
+            const product = req.body;
+            const result = await addToCartCollection.insertOne(product);
+            res.send(result)
+        });
+
+
+
+
     } finally {
 
     }
 }
-run().catch(e => console.error(e))
+run().catch(e => console.error(e));
 
 
 
@@ -37,5 +62,5 @@ app.get('/', async (req, res) => {
     res.send("Hey developer i am calling from server");
 })
 app.listen(port, () => {
-    console.log("server runing on this", port)
+    console.log("server runing on this", port);
 })
