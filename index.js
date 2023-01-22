@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { query } = require('express');
 require('dotenv').config()
 const app = express()
 const port = process.env.PORT || 5000
@@ -30,14 +31,13 @@ const run = async () => {
             res.send(products);
         });
 
-        /* Get modal data from here */
-        app.get('/product/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-            const product = await productsCollection.findOne(query);
-            res.send(product);
-        });
-
+        /* Get all cart product from here */
+        app.get('/add-to-cart', async (req, res) => {
+            const email = req.query.email
+            const query = { buyerEmail: email }
+            const addToCartProducts = await addToCartCollection.find(query).toArray()
+            res.send(addToCartProducts)
+        })
 
         /* Save purchase product */
         app.post('/add-to-cart', async (req, res) => {
@@ -45,6 +45,13 @@ const run = async () => {
             const result = await addToCartCollection.insertOne(product);
             res.send(result)
         });
+
+        /* Delete single cart product here */
+        app.delete('/add-to-cart/:id', async (req, res) => {
+            query = { _id: ObjectId(req.params.id) }
+            const result = await addToCartCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
 
