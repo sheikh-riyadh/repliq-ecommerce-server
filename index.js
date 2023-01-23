@@ -99,14 +99,6 @@ const run = async () => {
             const result = await usersCollection.deleteOne(query);
             res.send(result)
         })
-
-
-
-
-
-
-
-
     } finally {
 
     }
