@@ -25,12 +25,18 @@ const run = async () => {
         const usersCollection = client.db('repliq-ecommerce').collection('users-collection');
 
 
-        /* Get all products from here */
+        /* Get limit products from here */
         app.get('/', async (req, res) => {
+            const query = {};
+            const products = await productsCollection.find(query).limit(8).toArray();
+            res.send(products);
+        });
+
+        app.get('/all-products', async (req, res) => {
             const query = {};
             const products = await productsCollection.find(query).toArray();
             res.send(products);
-        });
+        })
 
         /* Get all cart product from here */
         app.get('/add-to-cart', async (req, res) => {
